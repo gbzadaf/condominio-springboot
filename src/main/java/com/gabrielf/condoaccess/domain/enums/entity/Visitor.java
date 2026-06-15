@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Visitor {
+public class Visitor extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -26,6 +26,4 @@ public class Visitor {
 
     private String phone;
 
-    @Column(nullable = false)
-    private Boolean active = true;
 }

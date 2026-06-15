@@ -12,7 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Resident {
+public class Resident extends SoftDeletableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -35,7 +35,5 @@ public class Resident {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false)
-    private Boolean active = true;
 
 }
