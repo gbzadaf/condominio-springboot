@@ -1,6 +1,6 @@
 package com.gabrielf.condoaccess.domain.enums;
 
-public enum AcessStatus {
+public enum AccessStatus {
 
     PENDING,
     AUTHORIZED,

@@ -1,6 +1,6 @@
 package com.gabrielf.condoaccess.domain.enums.entity;
 
-import com.gabrielf.condoaccess.domain.enums.AcessStatus;
+import com.gabrielf.condoaccess.domain.enums.AccessStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,7 +38,7 @@ public class AccessRecord extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AcessStatus status;
+    private AccessStatus status;
 
     @Column(nullable = false)
     private LocalDateTime entryTime;
