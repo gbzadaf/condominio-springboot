@@ -4,6 +4,8 @@ import com.gabrielf.condoaccess.domain.enums.entity.User;
 import com.gabrielf.condoaccess.domain.enums.repository.UserRepository;
 import com.gabrielf.condoaccess.dto.UserRequest;
 import com.gabrielf.condoaccess.dto.UserResponse;
+import com.gabrielf.condoaccess.exception.DuplicateResourceException;
+import com.gabrielf.condoaccess.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,7 +25,7 @@ public class UserService {
     @Transactional
     public UserResponse create(UserRequest request){
         if (userRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("Usuário com esse email %s já existe".formatted(request.email()));
+            throw new DuplicateResourceException("Usuário com esse email %s já existe".formatted(request.email()));
 
         }
 
@@ -81,7 +83,7 @@ public class UserService {
     private User findUserOrThrow(UUID id) {
         return userRepository.findById(id)
                 .filter(user -> !user.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id: " + id));
 
     }
 

@@ -6,6 +6,8 @@ import com.gabrielf.condoaccess.domain.enums.repository.*;
 import com.gabrielf.condoaccess.dto.AccessExitRequest;
 import com.gabrielf.condoaccess.dto.AccessRecordRequest;
 import com.gabrielf.condoaccess.dto.AccessRecordResponse;
+import com.gabrielf.condoaccess.exception.BusinessException;
+import com.gabrielf.condoaccess.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -60,7 +62,7 @@ public class AccessRecordService {
         AccessRecord accessRecord = findAccessRecordOrThrow(id);
 
         if (accessRecord.getStatus() != AccessStatus.PENDING) {
-            throw new RuntimeException("Apenas acessos em espera podem ser aprovados");
+            throw new BusinessException("Apenas acessos em espera podem ser aprovados");
         }
 
         accessRecord.setStatus(AccessStatus.AUTHORIZED);
@@ -73,7 +75,7 @@ public class AccessRecordService {
         AccessRecord accessRecord = findAccessRecordOrThrow(id);
 
         if (accessRecord.getStatus() != AccessStatus.PENDING) {
-            throw new RuntimeException("Apenas acessos em espera podem ser negados");
+            throw new BusinessException("Apenas acessos em espera podem ser negados");
         }
 
         accessRecord.setStatus(AccessStatus.DENIED);
@@ -86,7 +88,7 @@ public class AccessRecordService {
         AccessRecord accessRecord = findAccessRecordOrThrow(id);
 
         if (accessRecord.getStatus() != AccessStatus.AUTHORIZED) {
-            throw new RuntimeException("Apenas acessos autorizados podem registrar uma saída");
+            throw new BusinessException("Apenas acessos autorizados podem registrar uma saída");
         }
 
         accessRecord.setExitTime(LocalDateTime.now());
@@ -116,31 +118,31 @@ public class AccessRecordService {
 
     private AccessRecord findAccessRecordOrThrow(UUID id) {
         return accessRecordRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Registro de acesso não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Registro de acesso não encontrado com id: " + id));
     }
 
     private Visitor findVisitorOrThrow(UUID id) {
         return visitorRepository.findById(id)
                 .filter(v -> !v.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Visitante não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Visitante não encontrado com id: " + id));
     }
 
     private Unit findUnitOrThrow(UUID id) {
         return unitRepository.findById(id)
                 .filter(u -> !u.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Unidade não encontrada com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Unidade não encontrada com id: " + id));
     }
 
     private Resident findResidentOrThrow(UUID id) {
         return residentRepository.findById(id)
                 .filter(r -> !r.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Morador não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Morador não encontrado com id: " + id));
     }
 
     private User findGatekeeperOrThrow(UUID id) {
         return userRepository.findById(id)
                 .filter(u -> !u.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Porteiro não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Porteiro não encontrado com id: " + id));
     }
 
 }

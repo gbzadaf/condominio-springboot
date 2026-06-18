@@ -4,6 +4,8 @@ import com.gabrielf.condoaccess.domain.enums.entity.Unit;
 import com.gabrielf.condoaccess.domain.enums.repository.UnitRepository;
 import com.gabrielf.condoaccess.dto.UnitRequest;
 import com.gabrielf.condoaccess.dto.UnitResponse;
+import com.gabrielf.condoaccess.exception.DuplicateResourceException;
+import com.gabrielf.condoaccess.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,7 +24,7 @@ public class UnitService {
     @Transactional
     public UnitResponse create(UnitRequest request) {
         if (unitRepository.existsByBlockAndNumber(request.block(), request.number())) {
-            throw new RuntimeException("Unidade %s-%s já existe".formatted(request.block(), request.number())
+            throw new DuplicateResourceException("Unidade %s-%s já existe".formatted(request.block(), request.number())
             );
         }
 
@@ -72,7 +74,7 @@ public class UnitService {
         private Unit findUnitOrThrow(UUID id) {
             return unitRepository.findById(id)
                     .filter(unit -> !unit.isDeleted())
-                    .orElseThrow(() -> new RuntimeException("Unidade não encontrada com id: " + id));
+                    .orElseThrow(() -> new ResourceNotFoundException("Unidade não encontrada com id: " + id));
         }
 
 

@@ -6,6 +6,8 @@ import com.gabrielf.condoaccess.domain.enums.repository.ResidentRepository;
 import com.gabrielf.condoaccess.domain.enums.repository.UnitRepository;
 import com.gabrielf.condoaccess.dto.ResidentRequest;
 import com.gabrielf.condoaccess.dto.ResidentResponse;
+import com.gabrielf.condoaccess.exception.DuplicateResourceException;
+import com.gabrielf.condoaccess.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,7 +26,7 @@ public class ResidentService {
     @Transactional
     public ResidentResponse create(ResidentRequest request) {
         if (residentRepository.existsByCpf(request.cpf())) {
-            throw  new RuntimeException("Morador com esse CPF %s já existente".formatted(request.cpf()));
+            throw  new DuplicateResourceException("Morador com esse CPF %s já existente".formatted(request.cpf()));
         }
 
         Unit unit = findUnitOrThrow(request.unitId());
@@ -81,13 +83,13 @@ public class ResidentService {
     private Resident findResidentOrThrow(UUID id) {
         return residentRepository.findById(id)
                 .filter(resident -> !resident.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Morador não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Morador não encontrado com id: " + id));
     }
 
     private Unit findUnitOrThrow(UUID id) {
         return unitRepository.findById(id)
                 .filter(unit -> !unit.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Unidade não encontrada com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Unidade não encontrada com id: " + id));
 
     }
 

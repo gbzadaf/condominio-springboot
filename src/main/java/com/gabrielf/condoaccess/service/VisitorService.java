@@ -4,6 +4,8 @@ import com.gabrielf.condoaccess.domain.enums.entity.Visitor;
 import com.gabrielf.condoaccess.domain.enums.repository.VisitorRepository;
 import com.gabrielf.condoaccess.dto.VisitorRequest;
 import com.gabrielf.condoaccess.dto.VisitorResponse;
+import com.gabrielf.condoaccess.exception.DuplicateResourceException;
+import com.gabrielf.condoaccess.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +21,7 @@ public class VisitorService {
 
     public VisitorResponse create(VisitorRequest request) {
         if (visitorRepository.existsByDocument(request.document())) {
-            throw new RuntimeException("Visitante com documento %s já existe".formatted(request.document())
+            throw new DuplicateResourceException("Visitante com documento %s já existe".formatted(request.document())
             );
         }
 
@@ -67,7 +69,7 @@ public class VisitorService {
     private Visitor findVisitorOrThrow(UUID id) {
         return visitorRepository.findById(id)
                 .filter(visitor -> !visitor.isDeleted())
-                .orElseThrow(() -> new RuntimeException("Visitante não encontrado com id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Visitante não encontrado com id: " + id));
 
     }
 }
