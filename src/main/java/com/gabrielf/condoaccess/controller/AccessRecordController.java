@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -23,6 +24,7 @@ public class AccessRecordController {
     private final AccessRecordService accessRecordService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'GATEKEEPER')")
     public ResponseEntity<AccessRecordResponse> registerEntry(@RequestBody @Valid AccessRecordRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(accessRecordService.registerEntry(request));
     }
@@ -44,16 +46,19 @@ public class AccessRecordController {
     }
 
     @PatchMapping("/{id}/approve")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GATEKEEPER')")
     public ResponseEntity<AccessRecordResponse> approve(@PathVariable UUID id) {
         return ResponseEntity.ok(accessRecordService.approveManually(id));
     }
 
     @PatchMapping("/{id}/deny")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GATEKEEPER')")
     public ResponseEntity<AccessRecordResponse> deny(@PathVariable UUID id) {
         return ResponseEntity.ok(accessRecordService.deny(id));
     }
 
     @PatchMapping("/{id}/exit")
+    @PreAuthorize("hasAnyRole('ADMIN', 'GATEKEEPER')")
     public ResponseEntity<AccessRecordResponse> registerExit(@PathVariable UUID id,
                                                              @RequestBody AccessExitRequest request) {
         return ResponseEntity.ok(accessRecordService.registerExit(id, request));

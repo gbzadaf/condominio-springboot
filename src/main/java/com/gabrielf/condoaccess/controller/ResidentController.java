@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,6 +23,7 @@ public class ResidentController {
 
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<ResidentResponse> create(@RequestBody @Valid ResidentRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(residentService.create(request));
     }
@@ -37,11 +39,13 @@ public class ResidentController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<ResidentResponse> update(@PathVariable UUID id, @RequestBody @Valid ResidentRequest request) {
         return ResponseEntity.ok(residentService.update(id, request));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {
         residentService.delete(id);
         return ResponseEntity.noContent().build();
